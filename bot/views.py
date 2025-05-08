@@ -15,3 +15,13 @@ def register_user(request):
         return Response(serializer.data, status=201)
     else:
         return Response({'massage': 'User already registered'})
+
+@api_view(['GET'])
+def get_user_info(request):
+    user_id = request.GET.get('user_id')
+    try:
+        user = TelegramUser.objects.get(user_id=user_id)
+        serializer = TelegramUserSerializer(user)
+        return Response(serializer.data)
+    except TelegramUser.DoesNotExist:
+        return Response({'error': 'Пользователь не зарегистрирован'}, status=404)

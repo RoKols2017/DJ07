@@ -29,5 +29,18 @@ def handle_start(message):
     else:
         bot.send_message(message.chat.id, "⚠️ Произошла ошибка регистрации.")
 
+@bot.message_handler(commands=['myinfo'])
+def handle_myinfo(message):
+    user_id = message.from_user.id
+    response = requests.get(API_URL.replace('register', 'myinfo'), params={
+        'user_id': user_id
+    })
+
+    if response.status_code == 200:
+        data = response.json()
+        bot.send_message(message.chat.id, f"👤 Ваши данные:\nID: {data['user_id']}\nUsername: {data.get('username')}")
+    else:
+        bot.send_message(message.chat.id, "❌ Вы не зарегистрированы.")
+
 bot.polling()
 
